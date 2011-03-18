@@ -44,6 +44,7 @@ var RJTK = (function(self,$){
         });
         dlg.dialog(options);
       });
+      return dlg;
     },
     injectAjaxErrors: function(form,xhr) {
         self.forms.injectValidationErrors(form,

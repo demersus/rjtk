@@ -9,10 +9,10 @@ var RJTK = (function(self,$) {
 
   self.util = {
     getCsrfToken: function() {
-      $('meta[name="csrf-token"]').attr('content');
+      return $('meta[name="csrf-token"]').attr('content');
     },
     getCsrfParam: function() {
-     $('meta[name=csrf-param]').attr('content')
+      return $('meta[name=csrf-param]').attr('content')
     },
     fillSelect: function(sel,data, opts) {
       if (typeof opts == undefined) {
