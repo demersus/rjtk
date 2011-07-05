@@ -61,7 +61,7 @@ var RJTK = (function(self,$){
     injectValidationErrors: function(form,errors) {
       var ctx = $(form);
       $.each(errors, function(field,msg){
-          var fld = $('[name*=' + field + ']', ctx);
+          var fld = $('[name$=' + self.forms.attributeNameToFieldName(field) + ']', ctx);
           var parent = fld.closest('li');
           var errorP = $('p.inline-errors',parent);
           if (errorP.length == 0){
@@ -71,6 +71,9 @@ var RJTK = (function(self,$){
           if(typeof msg == "object") msg = msg.join(', ');
           errorP.append(msg);
       });
+    },
+    attributeNameToFieldName: function(n){
+	return "[" + name.replace('.',"_attributes][") + "]";
     },
     removeValidationErrors: function(form) {
       var ctx = $(form);
@@ -105,7 +108,9 @@ var RJTK = (function(self,$){
     if(contentType && contentType.indexOf('json') > -1){
       self.forms.injectAjaxErrors(this,xhr);
     }
-    $(this).resetForm();
+  });
+  $('form').live('ajax:success.rjtk_forms', function(){
+	$(this).resetForm();
   });
   $('form').live('ajax:beforeSend.rjtk_forms', function(event,xhr, settings){
     self.forms.removeValidationErrors(this);
