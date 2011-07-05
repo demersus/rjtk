@@ -61,7 +61,7 @@ var RJTK = (function(self,$){
     injectValidationErrors: function(form,errors) {
       var ctx = $(form);
       $.each(errors, function(field,msg){
-          var fld = $('[name$=' + self.forms.attributeNameToFieldName(field) + ']', ctx);
+          var fld = $('[name$="' + self.forms.attributeNameToFieldName(field) + '"]', ctx);
           var parent = fld.closest('li');
           var errorP = $('p.inline-errors',parent);
           if (errorP.length == 0){
