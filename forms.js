@@ -73,7 +73,7 @@ var RJTK = (function(self,$){
       });
     },
     attributeNameToFieldName: function(n){
-	return "[" + name.replace('.',"_attributes][") + "]";
+	return "[" + n.replace('.',"_attributes][") + "]";
     },
     removeValidationErrors: function(form) {
       var ctx = $(form);
