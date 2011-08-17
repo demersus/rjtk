@@ -109,9 +109,7 @@ var RJTK = (function(self,$){
       self.forms.injectAjaxErrors(this,xhr);
     }
   });
-  $('form').live('ajax:success.rjtk_forms', function(){
-	$(this).resetForm();
-  });
+  
   $('form').live('ajax:beforeSend.rjtk_forms', function(event,xhr, settings){
     self.forms.removeValidationErrors(this);
   });
