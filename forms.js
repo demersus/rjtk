@@ -62,7 +62,7 @@ var RJTK = (function(self,$){
       var ctx = $(form);
       $.each(errors, function(field,msg){
           var fld = $('[name$="' + self.forms.attributeNameToFieldName(field) + '"]', ctx);
-          var parent = fld.closest('li');
+          var parent = fld.parent();
           var errorP = $('p.inline-errors',parent);
           if (errorP.length == 0){
               errorP = $('<p/>').addClass('inline-errors');
@@ -78,8 +78,7 @@ var RJTK = (function(self,$){
     removeValidationErrors: function(form) {
       var ctx = $(form);
       $('.inline-errors',ctx).each(function(){
-        // Assuming default formtastic layout
-        $(this).closest('li').removeClass('error');
+        $(this).parent().removeClass('error');
         $(this).remove();
       });
     },
