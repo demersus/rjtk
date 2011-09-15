@@ -65,8 +65,8 @@ var RJTK = (function(self,$){
           var parent = fld.parent();
           var errorP = $('p.inline-errors',parent);
           if (errorP.length == 0){
-              errorP = $('<p/>').addClass('inline-errors');
-              errorP.appendTo(parent);
+              errorP = $('<p/>').addClass('inline-errors error');
+              fld.after(errorP);
           }
           if(typeof msg == "object") msg = msg.join(', ');
           errorP.append(msg);
