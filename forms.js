@@ -62,7 +62,7 @@ var RJTK = (function(self,$){
           var fld = $('[name$="' + self.forms.attributeNameToFieldName(field) + '"]', ctx);
 	  if (!(fld.length > 0)) {
 	    // This is for attributes with 'relation_id' and errors on 'relation'
-	    fld = $('[name$="' + self.forms.attributeNameToFieldName(field) + '_id"]', ctx); 
+	    fld = $('[name$="' + self.forms.attributeNameToFieldName(field).replace(/\[(\w+)(?=\])(?!\]\[)/,"[$1_id") + '"]', ctx); 
 	  }
           self.forms.addErrors(fld,msg);
       });
