@@ -5,8 +5,6 @@
  * Author: Nik Petersen (Demersus)
  *
  * The remoteDialog depends on jqueryui, and the bundled ujs driver - or similar ujs API.
- * Some of these functions assume use of formtastic too,
- *  please override if your setup does not.
  */
 
 var RJTK = (function(self,$){
@@ -62,14 +60,11 @@ var RJTK = (function(self,$){
       var ctx = $(form);
       $.each(errors, function(field,msg){
           var fld = $('[name$="' + self.forms.attributeNameToFieldName(field) + '"]', ctx);
-          var parent = fld.parent();
-          var errorP = $('p.inline-errors',parent);
-          if (errorP.length == 0){
-              errorP = $('<p/>').addClass('inline-errors error');
-              fld.after(errorP);
-          }
-          if(typeof msg == "object") msg = msg.join(', ');
-          errorP.append(msg);
+	  if (!(fld.length > 0)) {
+	    // This is for attributes with 'relation_id' and errors on 'relation'
+	    fld = $('[name$="' + self.forms.attributeNameToFieldName(field) + '_id"]', ctx); 
+	  }
+          self.forms.addErrors(fld,msg);
       });
     },
     attributeNameToFieldName: function(n){
@@ -77,9 +72,8 @@ var RJTK = (function(self,$){
     },
     removeValidationErrors: function(form) {
       var ctx = $(form);
-      $('.inline-errors',ctx).each(function(){
-        $(this).parent().removeClass('error');
-        $(this).remove();
+      self.forms.findErrors.each(function(){
+        self.forms.removeErrors($(this));
       });
     },
     groupValidationErrors: function(errors) {
@@ -99,7 +93,24 @@ var RJTK = (function(self,$){
        *
        */
       return errors;
-    }
+    },
+    // add errors to field (Overridable)
+    addErrors: function(fld,errors){
+      if(typeof errors == "object") errors = errors.join(', ');
+      fld.after('<p class="inline-errors">' + errors + '</p>');
+      fld.parent().addClass('error');
+    },
+    // This is passed each error object found in 'fetchErrors' as a jQuery object
+    removeErrors: function(context) {
+      context.parent().removeClass('error');
+      context.remove();
+    },
+    // find error group (Overridable jquery object)
+    // context is either form, or field wrapper.
+    findErrors: function(context) {
+      return context.find('p.inline-errors'); 
+    },
+    
   };
 
   $('form').live('ajax:error.rjtk_forms',function(event,xhr, status, error){
