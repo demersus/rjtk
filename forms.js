@@ -72,7 +72,7 @@ var RJTK = (function(self,$){
     },
     removeValidationErrors: function(form) {
       var ctx = $(form);
-      self.forms.findErrors.each(function(){
+      self.forms.findErrors().each(function(){
         self.forms.removeErrors($(this));
       });
     },
