@@ -113,14 +113,13 @@ var RJTK = (function(self,$){
     
   };
 
-  $('form').live('ajax:error.rjtk_forms',function(event,xhr, status, error){
+  $(document).on('ajax:error.rjtk_forms','form',function(event,xhr,status,error){
     var contentType = xhr.getResponseHeader('Content-Type');
     if(contentType && contentType.indexOf('json') > -1){
       self.forms.injectAjaxErrors(this,xhr);
     }
   });
-  
-  $('form').live('ajax:beforeSend.rjtk_forms', function(event,xhr, settings){
+  $(document).on('ajax:beforeSend.rjtk_forms','form', function(event,xhr, settings){
     self.forms.removeValidationErrors(this);
   });
 
