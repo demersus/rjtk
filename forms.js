@@ -51,7 +51,9 @@ var RJTK = (function(self,$){
     },
     extractAjaxErrors: function(xhr){
       if(xhr.responseText) {
-        return $.parseJSON(xhr.responseText) || [];
+        var err = $.parseJSON(xhr.responseText) || [];
+        if (err['errors']) err = err['errors'];
+       	return err;
       } else {
         return [];
       }
