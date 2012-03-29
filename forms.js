@@ -34,7 +34,7 @@ var RJTK = (function(self,$){
         }).bind('ajax:success',function(event,data, status, xhr){
 	  if(typeof options['success'] == 'function') {
             options.success.call(context,data,dlg);
-	  } else if(typeof options['onSuccess'] == 'function'] {
+	  } else if(typeof options['onSuccess'] == 'function') {
 	    options.onSuccess.call(context,data,dlg);
 	  }
         }).bind('ajax:error',function(xhr, event, status, error){
