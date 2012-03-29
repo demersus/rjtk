@@ -15,11 +15,9 @@ var RJTK = (function(self,$){
         context = dlg;
       }
       var options = $.extend({
-        success: function(){
+        onSuccess: function(){
           dlg.dialog('close');
         },
-        error: function(){},
-        beforeSend: function(){},
         title: '',
         width: 600,
         modal: true
@@ -32,13 +30,17 @@ var RJTK = (function(self,$){
         form.bind('ajax:beforeSend',function(event,xhr,settings){
           form.hide();
           form.after('<h2 class="loading">Saving...</h2>');
-          options.beforeSend.call(context,event,xhr,settings,dlg)
+          if(typeof options['beforeSend'] == 'function') options.beforeSend.call(context,event,xhr,settings,dlg);
         }).bind('ajax:success',function(event,data, status, xhr){
-          options.success.call(context,data,dlg);
+	  if(typeof options['success'] == 'function) {
+            options.success.call(context,data,dlg);
+	  } else if(typeof options['onSuccess'] == 'function'] {
+	    options.onSuccess.call(context,data,dlg);
+	  }
         }).bind('ajax:error',function(xhr, event, status, error){
           form.show();
           form.next('h2.loading').remove();
-          options.error.call(context,xhr,dlg);
+	  if(typeof options['onError'] == 'function') options.onError.call(context,xhr,dlg);
         });
         dlg.dialog(options);
       });
