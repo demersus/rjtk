@@ -32,7 +32,7 @@ var RJTK = (function(self,$){
           form.after('<h2 class="loading">Saving...</h2>');
           if(typeof options['beforeSend'] == 'function') options.beforeSend.call(context,event,xhr,settings,dlg);
         }).bind('ajax:success',function(event,data, status, xhr){
-	  if(typeof options['success'] == 'function) {
+	  if(typeof options['success'] == 'function') {
             options.success.call(context,data,dlg);
 	  } else if(typeof options['onSuccess'] == 'function'] {
 	    options.onSuccess.call(context,data,dlg);
