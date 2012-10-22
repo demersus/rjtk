@@ -15,10 +15,10 @@ var RJTK = (function(self,$){
         context = dlg;
       }
       var options = $.extend({
-        onSuccess: function(){
+        onSuccess: function(data,dlg){
           dlg.dialog('close');
 					if(dlg != context) {
-						$(context).trigger("rjtk:dialog:success");
+						$(context).trigger("rjtk:dialog:success",[data,dlg]);
 					}
         },
         title: '',
