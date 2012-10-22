@@ -17,6 +17,9 @@ var RJTK = (function(self,$){
       var options = $.extend({
         onSuccess: function(){
           dlg.dialog('close');
+					if(dlg != context) {
+						$(context).trigger("rjtk:dialog:success");
+					}
         },
         title: '',
         width: 600,
