@@ -4,8 +4,7 @@ var RJTK = (function(self,$){
 	self.dialog = {
 		new: function(options) {
 			var $dlg = $("<div/>",{'class': 'reveal-modal'}).appendTo('body');
-			$dlg.append('<div class="reveal-modal-inner"></div>');
-			$dlg.append('<a class="close-reveal-modal">&#215;</a>');
+			$dlg.html('<a class="close-reveal-modal">&#215;</a><div class="reveal-modal-inner"></div>');
 
 			$dlg.on('rjtk:dialog:open',function(e){
 				$dlg.reveal();
@@ -13,6 +12,14 @@ var RJTK = (function(self,$){
 
 			$dlg.on('rjtk:dialog:close',function(e){
 				$dlg.trigger('reveal:close');
+			});
+
+			$dlg.on('reveal:closed.rjtk_dialog',function(e){
+				$dlg.trigger('rjtk:dialog:closed');
+			});
+
+			$dlg.on('reveal:opened.rjtk_dialog', function(e) {
+				$dlg.trigger('rjtk:dialog:opened');
 			});
 
 			$dlg.setContent = function(content) {

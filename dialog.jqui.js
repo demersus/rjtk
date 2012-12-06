@@ -13,10 +13,19 @@ var RJTK = (function(self,$){
 				modal: true},options || {});
 
 			$dlg.on('rjtk:dialog:open',function(e) {
-				$(this).dialog("open");
+				$dlg.dialog("open");
 			});
+
 			$dlg.on('rjtk:dialog:close',function(e) {
-				$(this).dialog("close");
+				$dlg.dialog("close");
+			});
+
+			$dlg.on('dialogopen.rjtk_dialog',function(e) {
+				$dlg.trigger('rjtk:dialog:opened');
+			});
+
+			$dlg.on('dialogclose.rjtk_dialog',function(e) {
+				$dlg.trigger('rjtk:dialog:closed');
 			});
 
 			$dlg.setContent = function(content) {

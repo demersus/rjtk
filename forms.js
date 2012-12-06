@@ -17,13 +17,15 @@ var RJTK = (function(self,$){
       }
       var options = $.extend({
         onSuccess: function(data,dlg){
-          dlg.trigger('rjtk:dialog:close.rjtk.forms');
+          dlg.trigger('rjtk:dialog:close');
 					if(dlg != context) {
-						$(context).trigger("ajax:success.rjtk.dialog",[data,dlg]);
+						$(context).trigger("ajax:success",[data,dlg]);
 					}
-        }
+        }	
       },params || {});
-      
+     	
+			$(context).trigger('loading');
+
 			$.get(url, function(data){
         dlg.setContent(data);
         
@@ -33,7 +35,7 @@ var RJTK = (function(self,$){
         form.attr({'data-remote': true, 'data-type': 'json'});
         
 				form.bind('ajax:beforeSend',function(event,xhr,settings){
-          form.trigger('loading.rjtk.forms');
+          form.trigger('loading');
           if(typeof options['beforeSend'] == 'function') options.beforeSend.call(context,event,xhr,settings,dlg);
         }).bind('ajax:success',function(event,data, status, xhr){
 					if(typeof options['success'] == 'function') {
@@ -42,10 +44,12 @@ var RJTK = (function(self,$){
 						options.onSuccess.call(context,data,dlg);
 					}
         }).bind('ajax:error',function(xhr, event, status, error){
-          form.trigger('loaded.rjtk.forms');
+          form.trigger('loaded');
 					if(typeof options['onError'] == 'function') options.onError.call(context,xhr,dlg);
         });
         
+				$(context).trigger('loaded');
+
 				dlg.trigger('rjtk:dialog:open');
       });
       return dlg;
@@ -121,13 +125,13 @@ var RJTK = (function(self,$){
     
   };
 
-  $(document).on('ajax:error.rjtk.forms','form',function(event,xhr,status,error){
+  $(document).on('ajax:error.rjtk_forms','form',function(event,xhr,status,error){
     var contentType = xhr.getResponseHeader('Content-Type');
     if(contentType && contentType.indexOf('json') > -1){
       self.forms.injectAjaxErrors(this,xhr);
     }
   });
-  $(document).on('ajax:beforeSend.rjtk.forms','form', function(event,xhr, settings){
+  $(document).on('ajax:beforeSend.rjtk_forms','form', function(event,xhr, settings){
     self.forms.removeValidationErrors(this);
   });
 
