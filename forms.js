@@ -10,29 +10,27 @@
 var RJTK = (function(self,$){
   self.forms = {
     remoteDialog: function(url,params,context){
-      var dlg = $('<div/>').appendTo('body').hide();
+      var dlg = RJTK.dialog.new(params);
+
       if (context == undefined) {
         context = dlg;
       }
       var options = $.extend({
         onSuccess: function(data,dlg){
-          dlg.dialog('close');
+          dlg.trigger('rjtk:dialog:close.rjtk.forms');
 					if(dlg != context) {
-						$(context).trigger("rjtk:dialog:success",[data,dlg]);
+						$(context).trigger("ajax:success.rjtk.dialog",[data,dlg]);
 					}
-        },
-        title: '',
-        width: 600,
-        modal: true
+        }
       },params || {});
-      $.get(url, function(data){
-        dlg.html(data);
+      
+			$.get(url, function(data){
+        dlg.setContent(data);
         var form = dlg.find('form');
         // Use our nice jquery ujs extensions
         form.attr({'data-remote': true, 'data-type': 'json'});
         form.bind('ajax:beforeSend',function(event,xhr,settings){
-          form.hide();
-          form.after('<h2 class="loading">Saving...</h2>');
+          form.trigger('loading.rjtk.forms');
           if(typeof options['beforeSend'] == 'function') options.beforeSend.call(context,event,xhr,settings,dlg);
         }).bind('ajax:success',function(event,data, status, xhr){
 	  if(typeof options['success'] == 'function') {
@@ -41,11 +39,10 @@ var RJTK = (function(self,$){
 	    options.onSuccess.call(context,data,dlg);
 	  }
         }).bind('ajax:error',function(xhr, event, status, error){
-          form.show();
-          form.next('h2.loading').remove();
+          form.trigger('loaded.rjtk.forms');
 	  if(typeof options['onError'] == 'function') options.onError.call(context,xhr,dlg);
         });
-        dlg.dialog(options);
+        dlg.trigger('rjtk:dialog:open.rjtk.forms');
       });
       return dlg;
     },
@@ -120,13 +117,13 @@ var RJTK = (function(self,$){
     
   };
 
-  $(document).on('ajax:error.rjtk_forms','form',function(event,xhr,status,error){
+  $(document).on('ajax:error.rjtk.forms','form',function(event,xhr,status,error){
     var contentType = xhr.getResponseHeader('Content-Type');
     if(contentType && contentType.indexOf('json') > -1){
       self.forms.injectAjaxErrors(this,xhr);
     }
   });
-  $(document).on('ajax:beforeSend.rjtk_forms','form', function(event,xhr, settings){
+  $(document).on('ajax:beforeSend.rjtk.forms','form', function(event,xhr, settings){
     self.forms.removeValidationErrors(this);
   });
 
