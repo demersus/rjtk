@@ -26,23 +26,27 @@ var RJTK = (function(self,$){
       
 			$.get(url, function(data){
         dlg.setContent(data);
-        var form = dlg.find('form');
-        // Use our nice jquery ujs extensions
+        
+				var form = dlg.find('form');
+        
+				// Use our nice jquery ujs extensions
         form.attr({'data-remote': true, 'data-type': 'json'});
-        form.bind('ajax:beforeSend',function(event,xhr,settings){
+        
+				form.bind('ajax:beforeSend',function(event,xhr,settings){
           form.trigger('loading.rjtk.forms');
           if(typeof options['beforeSend'] == 'function') options.beforeSend.call(context,event,xhr,settings,dlg);
         }).bind('ajax:success',function(event,data, status, xhr){
-	  if(typeof options['success'] == 'function') {
-            options.success.call(context,data,dlg);
-	  } else if(typeof options['onSuccess'] == 'function') {
-	    options.onSuccess.call(context,data,dlg);
-	  }
+					if(typeof options['success'] == 'function') {
+									options.success.call(context,data,dlg);
+					} else if(typeof options['onSuccess'] == 'function') {
+						options.onSuccess.call(context,data,dlg);
+					}
         }).bind('ajax:error',function(xhr, event, status, error){
           form.trigger('loaded.rjtk.forms');
-	  if(typeof options['onError'] == 'function') options.onError.call(context,xhr,dlg);
+					if(typeof options['onError'] == 'function') options.onError.call(context,xhr,dlg);
         });
-        dlg.trigger('rjtk:dialog:open.rjtk.forms');
+        
+				dlg.trigger('rjtk:dialog:open');
       });
       return dlg;
     },
