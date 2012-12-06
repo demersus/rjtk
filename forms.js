@@ -4,7 +4,7 @@
  *
  * Author: Nik Petersen (Demersus)
  *
- * The remoteDialog depends on jqueryui, and the bundled ujs driver - or similar ujs API.
+ * The remoteDialog depends on a dialog/modal handler. (dialog.jqui, dialog.foundation).
  */
 
 var RJTK = (function(self,$){
@@ -18,13 +18,10 @@ var RJTK = (function(self,$){
       var options = $.extend({
         onSuccess: function(data,dlg){
           dlg.trigger('rjtk:dialog:close');
-					if(dlg != context) {
-						$(context).trigger("ajax:success",[data,dlg]);
-					}
-        }	
+        }				
       },params || {});
      	
-			$(context).trigger('loading');
+			if(dlg != context) $(context).trigger('loading');
 
 			$.get(url, function(data){
         dlg.setContent(data);
@@ -35,22 +32,27 @@ var RJTK = (function(self,$){
         form.attr({'data-remote': true, 'data-type': 'json'});
         
 				form.bind('ajax:beforeSend',function(event,xhr,settings){
+
           form.trigger('loading');
           if(typeof options['beforeSend'] == 'function') options.beforeSend.call(context,event,xhr,settings,dlg);
+					if(dlg != context) $(context).trigger('rjtk:remoteForm:beforeSend', [xhr,settings,dlg]);
+
         }).bind('ajax:success',function(event,data, status, xhr){
-					if(typeof options['success'] == 'function') {
-									options.success.call(context,data,dlg);
-					} else if(typeof options['onSuccess'] == 'function') {
-						options.onSuccess.call(context,data,dlg);
-					}
+
+					if(typeof options['onSuccess'] == 'function') options.onSuccess.call(context,data,dlg);
+					if(dlg != context) $(context).trigger("rjtk:remoteForm:success",[data,dlg]);
+
         }).bind('ajax:error',function(xhr, event, status, error){
+
           form.trigger('loaded');
 					if(typeof options['onError'] == 'function') options.onError.call(context,xhr,dlg);
-        });
-        
-				$(context).trigger('loaded');
+					if(dlg != context) $(context).trigger("rjtk:remoteForm:error",[xhr,dlg]);
 
+				});
+        
+				if(dlg != context) $(context).trigger('loaded');
 				dlg.trigger('rjtk:dialog:open');
+
       });
       return dlg;
     },
@@ -125,6 +127,9 @@ var RJTK = (function(self,$){
     
   };
 
+	/**
+	 * These events will inject returned validation errors on remote forms (dialog or not)
+	 */
   $(document).on('ajax:error.rjtk_forms','form',function(event,xhr,status,error){
     var contentType = xhr.getResponseHeader('Content-Type');
     if(contentType && contentType.indexOf('json') > -1){
