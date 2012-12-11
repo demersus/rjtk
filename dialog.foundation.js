@@ -1,8 +1,9 @@
 
 
 var RJTK = (function(self,$){
+	'use strict';
 	self.dialog = {
-		new: function(options) {
+		newDialog: function(options) {
 			var $dlg = $("<div/>",{'class': 'reveal-modal'}).appendTo('body');
 			$dlg.html('<a class="close-reveal-modal">&#215;</a><div class="reveal-modal-inner"></div>');
 
@@ -24,11 +25,11 @@ var RJTK = (function(self,$){
 
 			$dlg.setContent = function(content) {
 				$dlg.find('.reveal-modal-inner').html(content);
-			}
+			};
 
 			return $dlg;
 		}
 	};
 
 	return self;
-})(RJTK || {},jQuery);
+}(RJTK || {},jQuery));

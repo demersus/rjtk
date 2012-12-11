@@ -8,22 +8,22 @@
  */
 
 var RJTK = (function(self,$){
+	"use strict";
   self.forms = {
     remoteDialog: function(url,params,context){
-      var dlg = RJTK.dialog.new(params);
+      var dlg = RJTK.dialog.newDialog(params),
+					options = $.extend({
+        		onSuccess: function(data,dlg){
+          		dlg.trigger('rjtk:dialog:close');
+        		}				
+      		},params || {});
 
-      if (context == undefined) {
+      if (context === undefined) {
         context = dlg;
       }
-      var options = $.extend({
-        onSuccess: function(data,dlg){
-          dlg.trigger('rjtk:dialog:close');
-        }				
-      },params || {});
      	
-			if(dlg != context) $(context).trigger('loading');
-
-			$.get(url, function(data){
+			
+			var dlgRequestSuccess = function(data) {
         dlg.setContent(data);
         
 				var form = dlg.find('form');
@@ -34,26 +34,65 @@ var RJTK = (function(self,$){
 				form.bind('ajax:beforeSend',function(event,xhr,settings){
 
           form.trigger('loading');
-          if(typeof options['beforeSend'] == 'function') options.beforeSend.call(context,event,xhr,settings,dlg);
-					if(dlg != context) $(context).trigger('rjtk:remoteDialog:form:beforeSend', [xhr,settings,dlg]);
+          if(typeof options['beforeSend'] === 'function') {
+						options.beforeSend.call(context,event,xhr,settings,dlg);
+					}
+					if(dlg !== context) {
+						$(context).trigger('rjtk:remoteDialog:form:beforeSend', [xhr,settings,dlg]);
+					}
 
         }).bind('ajax:success',function(event,data, status, xhr){
 
-					if(typeof options['onSuccess'] == 'function') options.onSuccess.call(context,data,dlg);
-					if(dlg != context) $(context).trigger("rjtk:remoteDialog:form:success",[data,dlg]);
+					if(typeof options['onSuccess'] === 'function') {
+						options.onSuccess.call(context,data,dlg);
+					}
+					if(dlg !== context) {
+						$(context).trigger("rjtk:remoteDialog:form:success",[data,dlg]);
+					}
 
         }).bind('ajax:error',function(xhr, event, status, error){
 
           form.trigger('loaded');
-					if(typeof options['onError'] == 'function') options.onError.call(context,xhr,dlg);
-					if(dlg != context) $(context).trigger("rjtk:remoteDialog:form:error",[xhr,dlg]);
+					if(typeof options['onError'] === 'function') {
+						options.onError.call(context,xhr,dlg);
+					}
+					if(dlg !== context) {
+						$(context).trigger("rjtk:remoteDialog:form:error",[xhr,dlg]);
+					}
 
 				});
         
-				if(dlg != context) $(context).trigger('loaded');
 				dlg.trigger('rjtk:dialog:open');
+			};
+			
+			var dlgAjaxAction = function() {
+				if(dlg !== context) {
+					$(context).trigger('loading');
+				}
+				$.ajax(url, {
+					type: 'GET',
+					beforeSend: function(){
+						
+					},
+					success: dlgRequestSuccess,
+					complete: function(){
+						if(dlg !== context) {
+							$(context).trigger('loaded');
+						}
+					},
+					statusCode: {
+						401: function(){ 
+							// We received an unauthorized status. 
+							// Trigger an event for the app to catch, 
+							// and callback our original action, after authorizing.
+							$(context).trigger('user:unauthorized',[dlgAjaxAction]);
+						}
+					}
+				});
+			};
 
-      });
+			dlgAjaxAction();
+
       return dlg;
     },
     injectAjaxErrors: function(form,xhr) {
@@ -62,13 +101,17 @@ var RJTK = (function(self,$){
                         self.forms.extractAjaxErrors(xhr)));
     },
     extractAjaxErrors: function(xhr){
+			var ret;
       if(xhr.responseText) {
         var err = $.parseJSON(xhr.responseText) || [];
-        if (err['errors']) err = err['errors'];
-       	return err;
+        if (err['errors']) {
+					err = err['errors'];
+				}
+       	ret = err;
       } else {
-        return [];
+        ret = [];
       }
+			return ret;
     },
     injectValidationErrors: function(form,errors) {
       var ctx = $(form);
@@ -110,7 +153,9 @@ var RJTK = (function(self,$){
     },
     // add errors to field (Overridable)
     addErrors: function(fld,errors){
-      if(typeof errors == "object") errors = errors.join(', ');
+      if(typeof errors === "object") {
+				errors = errors.join(', ');
+			}
       fld.after('<p class="inline-errors">' + errors + '</p>');
       fld.parent().addClass('error');
     },
@@ -123,8 +168,7 @@ var RJTK = (function(self,$){
     // context is either form, or field wrapper.
     findErrors: function(context) {
       return context.find('p.inline-errors'); 
-    },
-    
+    }
   };
 
 	/**
@@ -141,4 +185,4 @@ var RJTK = (function(self,$){
   });
 
   return self;
-})(RJTK || {},jQuery);
+}(RJTK || {},jQuery));
