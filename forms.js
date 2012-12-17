@@ -34,30 +34,30 @@ var RJTK = (function(self,$){
 				form.bind('ajax:beforeSend',function(event,xhr,settings){
 
           form.trigger('loading');
-          if(typeof options['beforeSend'] === 'function') {
-						options.beforeSend.call(context,event,xhr,settings,dlg);
-					}
 					if(dlg !== context) {
 						$(context).trigger('rjtk:remoteDialog:form:beforeSend', [xhr,settings,dlg]);
+					}
+          if(typeof options['beforeSend'] === 'function') {
+						options.beforeSend.call(context,event,xhr,settings,dlg);
 					}
 
         }).bind('ajax:success',function(event,data, status, xhr){
 
-					if(typeof options['onSuccess'] === 'function') {
-						options.onSuccess.call(context,data,dlg);
-					}
 					if(dlg !== context) {
 						$(context).trigger("rjtk:remoteDialog:form:success",[data,dlg]);
 					}
 
+					if(typeof options['onSuccess'] === 'function') {
+						options.onSuccess.call(context,data,dlg);
+					}
         }).bind('ajax:error',function(xhr, event, status, error){
 
           form.trigger('loaded');
-					if(typeof options['onError'] === 'function') {
-						options.onError.call(context,xhr,dlg);
-					}
 					if(dlg !== context) {
 						$(context).trigger("rjtk:remoteDialog:form:error",[xhr,dlg]);
+					}
+					if(typeof options['onError'] === 'function') {
+						options.onError.call(context,xhr,dlg);
 					}
 
 				});
