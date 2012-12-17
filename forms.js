@@ -32,7 +32,6 @@ var RJTK = (function(self,$){
         form.attr({'data-remote': true, 'data-type': 'json'});
         
 				form.bind('ajax:beforeSend',function(event,xhr,settings){
-
           form.trigger('loading');
 					if(dlg !== context) {
 						$(context).trigger('rjtk:remoteDialog:form:beforeSend', [xhr,settings,dlg]);
@@ -42,7 +41,6 @@ var RJTK = (function(self,$){
 					}
 
         }).bind('ajax:success',function(event,data, status, xhr){
-
 					if(dlg !== context) {
 						$(context).trigger("rjtk:remoteDialog:form:success",[data,dlg]);
 					}
@@ -50,9 +48,7 @@ var RJTK = (function(self,$){
 					if(typeof options['onSuccess'] === 'function') {
 						options.onSuccess.call(context,data,dlg);
 					}
-        }).bind('ajax:error',function(xhr, event, status, error){
-
-          form.trigger('loaded');
+        }).bind('ajax:error',function(event, xhr,status, error){
 					if(dlg !== context) {
 						$(context).trigger("rjtk:remoteDialog:form:error",[xhr,dlg]);
 					}
@@ -60,6 +56,14 @@ var RJTK = (function(self,$){
 						options.onError.call(context,xhr,dlg);
 					}
 
+				}).bind('ajax:complete', function(e,xhr,status) {
+          form.trigger('loaded');
+					if(dlg !== context) {
+						$(context).trigger("rjtk:remoteDialog:form:complete",[xhr,dlg,status]);
+					}
+					if(typeof options['onComplete'] == 'function') {
+						options.onComplete.call(context,xhr,dlg);
+					}
 				});
         
 				dlg.trigger('rjtk:dialog:open');
