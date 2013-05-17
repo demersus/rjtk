@@ -8,7 +8,7 @@ var RJTK = (function(self,$){
 			$dlg.html('<a class="close-reveal-modal">&#215;</a><div class="reveal-modal-inner"></div>');
 
 			$dlg.on('rjtk:dialog:open',function(e){
-				$dlg.reveal();
+				$dlg.foundation('reveal','open');
 			});
 
 			$dlg.on('rjtk:dialog:close',function(e){
