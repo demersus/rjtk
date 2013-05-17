@@ -12,16 +12,20 @@ var RJTK = (function(self,$){
 			});
 
 			$dlg.on('rjtk:dialog:close',function(e){
-				$dlg.trigger('reveal:close');
+				$dlg.trigger('close.fndtn.reveal');
 			});
 
 			$dlg.on('reveal:closed.rjtk_dialog',function(e){
-				$dlg.trigger('rjtk:dialog:closed');
+				$dlg.trigger('closed.fndtn.reveal');
 			});
 
-			$dlg.on('reveal:opened.rjtk_dialog', function(e) {
+			$dlg.on('opened.fndtn.reveal.rjtk_dialog', function(e) {
 				$dlg.trigger('rjtk:dialog:opened');
 			});
+
+			$dlg.on('open.fndtn.reveal.rjtk_dialog', function(e) {
+				$dlg.trigger('rjtk:dialog:open');
+			}
 
 			$dlg.setContent = function(content) {
 				$dlg.find('.reveal-modal-inner').html(content);
