@@ -25,7 +25,7 @@ var RJTK = (function(self,$){
 
 			$dlg.on('open.fndtn.reveal.rjtk_dialog', function(e) {
 				$dlg.trigger('rjtk:dialog:open');
-			}
+			});
 
 			$dlg.setContent = function(content) {
 				$dlg.find('.reveal-modal-inner').html(content);
