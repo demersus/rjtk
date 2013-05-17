@@ -12,11 +12,11 @@ var RJTK = (function(self,$){
 			});
 
 			$dlg.on('rjtk:dialog:close',function(e){
-				$dlg.trigger('close');
+				$dlg.foundation('reveal','close');
 			});
 
-			$dlg.on('reveal:closed.rjtk_dialog',function(e){
-				$dlg.trigger('closed');
+			$dlg.on('closed.rjtk_dialog',function(e){
+				$dlg.trigger('rjtk:dialog:closed');
 			});
 
 			$dlg.on('opened.rjtk_dialog', function(e) {
