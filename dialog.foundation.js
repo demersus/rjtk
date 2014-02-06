@@ -4,7 +4,7 @@ var RJTK = (function(self,$){
 	'use strict';
 	self.dialog = {
 		newDialog: function(options) {
-			var $dlg = $("<div/>",{'class': 'reveal-modal'}).appendTo('body');
+			var $dlg = $("<div/>",{'class': 'reveal-modal', 'data-reveal': true}).appendTo('body');
 			$dlg.html('<a class="close-reveal-modal">&#215;</a><div class="reveal-modal-inner"></div>');
 
 			$dlg.on('rjtk:dialog:open',function(e){
