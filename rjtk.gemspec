@@ -14,4 +14,5 @@ Gem::Specification.new do |s|
   s.description = "Useful javascript utilities for rails development, bundled into a little toolkit"
 
   s.files = Dir["{vendor,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.markdown"]
+  s.add_dependency "railties"
 end
